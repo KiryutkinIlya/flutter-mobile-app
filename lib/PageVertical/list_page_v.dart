@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/widget/item_widget.dart';
 
 class MyHomeVerticalPage extends StatefulWidget {
   const MyHomeVerticalPage({super.key, required this.title});
@@ -12,6 +13,7 @@ class MyHomeVerticalPage extends StatefulWidget {
 
 class _MyHomeVerticalPageState extends State<MyHomeVerticalPage> {
   int _count = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class _MyHomeVerticalPageState extends State<MyHomeVerticalPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(color: Colors.green, spreadRadius: 3),
                 ],
               ),
@@ -33,7 +35,7 @@ class _MyHomeVerticalPageState extends State<MyHomeVerticalPage> {
               width: MediaQuery.of(context).size.width * 1,
               child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return new Container(
+                    return Container(
                         margin: EdgeInsets.only(top: 2),
                         child: Center(
                           child: Text(' ${widget.title} ${(index + 1).toString()} ',

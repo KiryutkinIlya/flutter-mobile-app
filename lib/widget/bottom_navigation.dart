@@ -16,12 +16,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.access_time_rounded),
-          label: 'Статистика',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.sunny),
           label: 'Погода',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.access_time_rounded),
+          label: 'Статистика',
         ),
       ],
       currentIndex: widget.index,
@@ -33,10 +33,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
     switch(index)
     {
       case 0:
-        Navigator.of(context).pushNamed('/listPage' ,arguments: {'tittle': 'из нижний панели'});
+        Navigator.pushNamedAndRemoveUntil(context,'/weatherPage' ,(route) => false);
         break;
       case 1:
-        Navigator.pushNamedAndRemoveUntil(context,'/weatherPage' ,(route) => false);
+        Navigator.of(context).pushNamed('/listPage' ,arguments: {'tittle': 'из нижний панели'});
         break;
     }
   }
