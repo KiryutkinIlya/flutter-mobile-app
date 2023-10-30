@@ -8,10 +8,10 @@ class RouteGenerator {
     WidgetBuilder? builder;
     switch (settings.name) {
       case '/listPage':
-        builder = (BuildContext context) => ListPage(title: args!['tittle'],);
+        builder = (BuildContext context) => ListPage();
         break;
       case '/weatherPage':
-        builder = (BuildContext context) => WeatherPage();
+        builder = (BuildContext context) => WeatherPageFlow();
         break;
       default:
         return _errorRoute();

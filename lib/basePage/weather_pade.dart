@@ -4,18 +4,33 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/appIcons.dart';
+import 'package:my_app/block/weather/weather_block.dart';
+import 'package:my_app/block/weather/weather_event.dart';
+import 'package:my_app/block/weather/weather_state.dart';
 import 'package:my_app/temp.dart';
 import 'package:my_app/weather.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_app/widget/bottom_navigation.dart';
-class WeatherPage extends StatefulWidget {
-  WeatherPage({super.key,});
+
+class WeatherPage extends StatelessWidget{
+  const WeatherPage();
+
   @override
-  _WeatherPageState createState() => _WeatherPageState();
+  Widget build(BuildContext context){
+    return BlocProvider<WeatherBloc>(create: (context)=>WeatherBloc()..add(LoadWeatherEvent()),
+    child:WeatherPageFlow());
+  }
 }
 
-class _WeatherPageState extends State<WeatherPage> {
+class WeatherPageFlow extends StatefulWidget {
+  WeatherPageFlow({super.key,});
+  @override
+  _WeatherPageFlowState createState() => _WeatherPageFlowState();
+}
+
+class _WeatherPageFlowState extends State<WeatherPageFlow> {
   late Future<WeatherData> weatherDataFuture;
   late ScrollController _scrollController;
   final double scrollOffset = 500;
@@ -82,79 +97,69 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     final double pinnedHeaderHeight = statusBarHeight + kToolbarHeight;
-    if (connectivityResult == ConnectivityResult.none) {
       // Нет интернета, отображаем виджет "нет интернета"
-      return Scaffold(
-        body: Center(
-          child: Container(
-              width: 160,
-              height: 160,
-              child: Column(
-                  children: [
-                    Icon(AppIcons.error,size:70),
-                    Container(
-                        padding: EdgeInsets.all(20),
-                        child:InkWell(
-                            onTap: checkConnectivity,
-                            child:Text('Нет интернета, \n попробовать еще раз?',textAlign: TextAlign.center,))
-                    )])
-          ),
-        ),
-      );
-    } else {
-      return Scaffold(
-        body: FutureBuilder<WeatherData>(
-          future: weatherDataFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              // Возвращаем текст ошибки, если произошла ошибка
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              // Возвращаем интерфейс с данными о погоде
-              final weatherData = snapshot.data!;
-              return NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    title: TittleAppBar(
-                      tempText: 'Погода в Пензе ${weatherData!.temperature != null ? weatherData!.temperature : ''}℃',
-                      opacity: _opacityDuration,
-                    ),
-                    floating: true,
-                    pinned: true,
-                    expandedHeight: 500,
-                    backgroundColor:
-                    _getColorFromHex(weatherData.skyColor),
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        decoration: BoxDecoration(
-                          color:
-                          _getColorFromHex(weatherData!.skyColor),
+      return BlocConsumer<WeatherBloc, WeatherState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            body: FutureBuilder<WeatherData>(
+              future: weatherDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // Возвращаем текст ошибки, если произошла ошибка
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  // Возвращаем интерфейс с данными о погоде
+                  final weatherData = snapshot.data!;
+                  return NestedScrollView(
+                    controller: _scrollController,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) =>
+                    [
+                      SliverAppBar(
+                        title: TittleAppBar(
+                          tempText: 'Погода в Пензе ${weatherData!
+                              .temperature != null
+                              ? weatherData!.temperature
+                              : ''}℃',
+                          opacity: _opacityDuration,
+                        ),
+                        floating: true,
+                        pinned: true,
+                        expandedHeight: 500,
+                        backgroundColor:
+                        _getColorFromHex(weatherData.skyColor),
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: Container(
+                            decoration: BoxDecoration(
+                              color:
+                              _getColorFromHex(weatherData!.skyColor),
+                            ),
+                          ),
+                          title: Text(
+                            '${weatherData!.temperature != null ? weatherData!
+                                .temperature : ''}℃',
+                          ),
+                          centerTitle: true,
+                          titlePadding: EdgeInsets.only(bottom: 250.0),
                         ),
                       ),
-                      title: Text(
-                        '${weatherData!.temperature != null ? weatherData!.temperature : ''}℃',
-                      ),
-                      centerTitle: true,
-                      titlePadding: EdgeInsets.only(bottom: 250.0),
-                    ),
-                  ),
-                ],
-                body:  Container(
-                  margin: EdgeInsets.only(top:40),
-                  child:Content(
-                  timeSunrise: weatherData!.sunriseTime,
-                  timeSunset: weatherData!.sunsetTime,
-                ),),
-              );
-            }
-          },
-        ),
-        bottomNavigationBar: BottomNavigation(index:1),
+                    ],
+                    body: Container(
+                      margin: EdgeInsets.only(top: 40),
+                      child: Content(
+                        timeSunrise: weatherData!.sunriseTime,
+                        timeSunset: weatherData!.sunsetTime,
+                      ),),
+                  );
+                }
+              },
+            ),
+            bottomNavigationBar: BottomNavigation(index: 0),
+          );
+        },
       );
-    }
   }
 }
 

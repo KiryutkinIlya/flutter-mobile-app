@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key, required this.index});
-
   final int index;
-
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
@@ -16,7 +14,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.sunny),
+          icon: Icon(Icons.sunny,),
           label: 'Погода',
         ),
         BottomNavigationBarItem(

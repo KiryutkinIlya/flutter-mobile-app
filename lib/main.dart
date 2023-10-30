@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/route_generator.dart';
 import 'basePage/list_page.dart';
+import 'basePage/login_page.dart';
 //https://yandex.com/time/sync.json?geo=49
 void main() {
   runApp(const MyApp());
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ListPage(title: 'первый запуск',),
+      home: LoginPage(),
     );
   }
 }
